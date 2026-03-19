@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../models/station.dart';
 import '../models/heat.dart';
 import '../models/race_time.dart';
+import '../models/penalty.dart';
 import '../services/database_service.dart';
 import '../services/api_service.dart';
 
@@ -141,19 +142,37 @@ class RaceProvider with ChangeNotifier {
     });
   }
 
-  /// Agregar penalización de tiempo (en segundos) al tiempo actual
-  void addPenalty(int seconds) {
-    final ms = seconds * 1000;
+  /// Agregar penalización al tiempo. Recibe el PenaltyItem completo para persistir en BD.
+  void addPenalty(PenaltyItem penalty) {
+    final ms = penalty.penaltySeconds * 1000;
     totalPenaltyMs += ms;
     penaltyCount++;
-    // Si está corriendo, adelantamos el _startTime para que el contador cuente más
+
+    // Capturamos el timer en el momento justo antes de alterar el tiempo
+    final timerMsAtPenalty = _elapsedMs;
+
+    // Ajustar el cronómetro
     if (raceState == RaceState.running && _startTime != null) {
       _startTime = _startTime!.subtract(Duration(milliseconds: ms));
     } else {
-      // Si está pausado, sumamos directamente al elapsed
       _elapsedMs += ms;
     }
     notifyListeners();
+
+    // Persistir en BD en background (no bloquear la UI)
+    if (_sessionId != null && selectedTeam != null) {
+      final station = currentStation;
+      final module = getModuleForStation(station.tipo, station.nombre);
+      _db.savePenalty(
+        sessionId: _sessionId!,
+        idEquipo: selectedTeam!.id,
+        idEstacion: station.id,
+        moduleId: module?.id ?? 0,
+        penaltyTypeId: penalty.id,
+        penaltySeconds: penalty.penaltySeconds,
+        timerMsAtPenalty: timerMsAtPenalty,
+      );
+    }
   }
 
   /// Parar el cronómetro y crear un tiempo provisional (aún NO guardado en DB)

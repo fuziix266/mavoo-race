@@ -9,6 +9,7 @@ import '../models/station.dart';
 import '../models/race_time.dart';
 import '../models/penalty.dart';
 import '../theme/app_theme.dart';
+import 'home_screen.dart';
 import 'results_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -75,8 +76,28 @@ class RaceScreen extends StatelessWidget {
                     Expanded(
                       child: Center(child: _StationPill(station: station)),
                     ),
-                    // Espejo invisible para centrar el pill
-                    const SizedBox(width: 44),
+                    // Botón Home — simetría con el botón de atrás
+                    GestureDetector(
+                      onTap: () => _showExitDialog(
+                        context: context,
+                        stationColor: stationColor,
+                      ),
+                      child: Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withAlpha(30),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                              color: Colors.white.withAlpha(40), width: 1),
+                        ),
+                        child: const Icon(
+                          Icons.home_rounded,
+                          color: Colors.white,
+                          size: 22,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -882,6 +903,57 @@ void _showBackDialog({
   );
 }
 
+void _showExitDialog({
+  required BuildContext context,
+  required Color stationColor,
+}) {
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      title: Text(
+        '¿Salir al menú principal?',
+        style: GoogleFonts.rajdhani(
+          fontSize: 22,
+          fontWeight: FontWeight.w800,
+          color: Colors.black87,
+        ),
+      ),
+      content: Text(
+        'El tiempo actual de esta estación no se guardará.',
+        style: GoogleFonts.inter(fontSize: 14, color: Colors.black54),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text('Cancelar',
+              style: GoogleFonts.inter(color: Colors.black38)),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: stationColor,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)),
+          ),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
+              (route) => false,
+            );
+          },
+          child: Text('Ir al inicio',
+              style: GoogleFonts.rajdhani(
+                  fontSize: 16, fontWeight: FontWeight.w700)),
+        ),
+      ],
+    ),
+  );
+}
+
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Icono de la estación — Font Awesome
 // ─────────────────────────────────────────────────────────────────────────────
@@ -934,12 +1006,12 @@ void _showPenaltyModal(BuildContext context, RaceProvider provider) {
 
   showDialog(
     context: context,
-    barrierColor: Colors.black.withAlpha(140),
+    barrierColor: Colors.black.withAlpha(60),
     builder: (ctx) => _PenaltyModal(
       penalties: penalties,
       stationName: station.nombre,
       onPenalty: (p) {
-        provider.addPenalty(p.penaltySeconds);
+        provider.addPenalty(p);
         Navigator.pop(ctx);
       },
     ),
@@ -967,9 +1039,9 @@ class _PenaltyModal extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 28, sigmaY: 28),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.black.withAlpha(170),
+              color: Colors.white.withAlpha(130),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withAlpha(35)),
+              border: Border.all(color: Colors.black.withAlpha(15)),
             ),
             child: Padding(
               padding: const EdgeInsets.all(22),
@@ -992,7 +1064,7 @@ class _PenaltyModal extends StatelessWidget {
                               style: GoogleFonts.rajdhani(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w900,
-                                color: Colors.white,
+                                color: const Color(0xFF1A1A2E),
                                 letterSpacing: 2,
                                 height: 1,
                               ),
@@ -1001,7 +1073,7 @@ class _PenaltyModal extends StatelessWidget {
                               stationName.toUpperCase(),
                               style: GoogleFonts.inter(
                                 fontSize: 10,
-                                color: Colors.white38,
+                                color: Colors.black38,
                                 letterSpacing: 2,
                               ),
                             ),
@@ -1011,16 +1083,34 @@ class _PenaltyModal extends StatelessWidget {
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: Icon(Icons.close_rounded,
-                            color: Colors.white38, size: 22),
+                            color: Colors.black38, size: 22),
                       ),
                     ],
                   ),
                   const SizedBox(height: 18),
-                  // Lista de penalizaciones
-                  ...penalties.map((p) => _PenaltyButton(
-                        penalty: p,
-                        onTap: () => onPenalty(p),
-                      )),
+                  // Lista de penalizaciones — scrollable sin scrollbar visible
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * 0.55,
+                    ),
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                        scrollbars: false,
+                      ),
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: penalties
+                              .map((p) => _PenaltyButton(
+                                    penalty: p,
+                                    onTap: () => onPenalty(p),
+                                  ))
+                              .toList(),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -1046,9 +1136,9 @@ class _PenaltyButton extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: Colors.white.withAlpha(12),
+            color: Colors.white.withAlpha(110),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: Colors.white.withAlpha(25)),
+            border: Border.all(color: Colors.black.withAlpha(12)),
           ),
           child: Row(
             children: [
@@ -1061,14 +1151,14 @@ class _PenaltyButton extends StatelessWidget {
                       style: GoogleFonts.rajdhani(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: const Color(0xFF1A1A2E),
                       ),
                     ),
                     Text(
                       penalty.description,
                       style: GoogleFonts.inter(
                         fontSize: 10,
-                        color: Colors.white.withAlpha(115),
+                        color: Colors.black54,
                         height: 1.3,
                       ),
                     ),
