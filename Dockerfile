@@ -12,25 +12,24 @@ RUN flutter pub get --no-example
 # Copiar el resto del proyecto
 COPY . .
 
-# Build web release
-RUN flutter build web --release --base-href "/"
+# Build web release — base-href /race/ para mavoo.fit/race
+RUN flutter build web --release --base-href "/race/"
 
 # ── Stage 2: Serve con Nginx ──
 FROM nginx:alpine
 
-# Copiar el build de Flutter al directorio de nginx
-COPY --from=build /app/build/web /usr/share/nginx/html
+# Copiar el build de Flutter al subdirectorio /race/
+COPY --from=build /app/build/web /usr/share/nginx/html/race
 
-# Configuración de nginx para SPA (single page app)
+# Configuración de nginx para SPA en subdirectorio /race/
 RUN echo 'server { \
     listen 80; \
     server_name _; \
     root /usr/share/nginx/html; \
     index index.html; \
-    location / { \
-        try_files $uri $uri/ /index.html; \
+    location /race/ { \
+        try_files $uri $uri/ /race/index.html; \
     } \
-    # Cache de assets estáticos \
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|wasm)$ { \
         expires 1y; \
         add_header Cache-Control "public, immutable"; \
@@ -40,3 +39,4 @@ RUN echo 'server { \
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
+

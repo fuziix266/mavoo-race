@@ -53,7 +53,7 @@ HyroxModule? getModuleForStation(String tipo, String nombre) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Tipos de Penalización — con IDs fijos que coinciden con hyrox_penalty_types
+// Tipos de Penalización — Mallkubox Arica Race 2026
 // ─────────────────────────────────────────────────────────────────────────────
 
 class PenaltyItem {
@@ -82,77 +82,65 @@ class PenaltyItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Catálogo completo de tipos de penalización — IDs fijos
-// module_id 0 = aplica a cualquier módulo (penalización global)
+// Catálogo de penalizaciones — Mallkubox Arica Race 2026
+//
+// Solo en ERG (Ski Erg después de Run 1, Row Erg después de Run 3):
+//   • 5" por penalización en ergs
+//
+// Siempre disponibles (en todas las estaciones):
+//   • 5" por actitud antideportiva
+//   • 5" por tomar agua
+//   • 3' por saltarse una estación
 // ─────────────────────────────────────────────────────────────────────────────
 
-const List<PenaltyItem> allPenaltyTypes = [
-  // ── Globales (module_id = 0) ────────────────────────────
-  PenaltyItem(id: 1,  moduleId: 0, label: 'Equipo incorrecto',    description: 'Uso de equipo no aprobado o peso no reglamentario', penaltySeconds: 120),
-  PenaltyItem(id: 2,  moduleId: 0, label: 'Asistencia externa',   description: 'Recibir ayuda no permitida de otra persona',        penaltySeconds: 180),
-  PenaltyItem(id: 3,  moduleId: 0, label: 'Roxzone incorrecto',   description: 'Entrada/salida incorrecta del área de estación',    penaltySeconds: 120),
-  PenaltyItem(id: 4,  moduleId: 0, label: 'Orden incorrecto',     description: 'Completar estaciones en orden equivocado',          penaltySeconds: 180),
+/// Penalización específica para estaciones ERG (Ski Erg y Row Erg)
+const PenaltyItem _penaltyErg = PenaltyItem(
+  id: 1,
+  moduleId: 2, // ERG
+  label: 'Penalización Erg',
+  description: 'Ejecución incorrecta del ejercicio: rango de movimiento incompleto o técnica deficiente',
+  penaltySeconds: 5,
+);
 
-  // ── Run (module_id = 1) ─────────────────────────────────
-  PenaltyItem(id: 5,  moduleId: 1, label: 'Vuelta incompleta',    description: 'No completar los metros reglamentarios del tramo',  penaltySeconds: 180),
-
-  // ── SkiErg (module_id = 2) ──────────────────────────────
-  PenaltyItem(id: 6,  moduleId: 2, label: 'Rep incompleta',       description: 'Rango de movimiento insuficiente en brazos',        penaltySeconds: 15),
-  PenaltyItem(id: 7,  moduleId: 2, label: 'Máquina soltada',      description: 'Soltar correas antes de completar la distancia',    penaltySeconds: 30),
-  PenaltyItem(id: 8,  moduleId: 2, label: 'Distancia incompleta', description: 'No completar la distancia reglamentaria',           penaltySeconds: 120),
-
-  // ── Sled Push (module_id = 3) ───────────────────────────
-  PenaltyItem(id: 9,  moduleId: 3, label: 'Carril incompleto',    description: 'No completar un carril completo de empuje',         penaltySeconds: 180),
-  PenaltyItem(id: 10, moduleId: 3, label: 'Técnica incorrecta',   description: 'Empuje con técnica no reglamentaria',               penaltySeconds: 15),
-
-  // ── Sled Pull (module_id = 4) ───────────────────────────
-  PenaltyItem(id: 11, moduleId: 4, label: 'Carril incompleto',    description: 'No completar un carril completo de halado',         penaltySeconds: 180),
-  PenaltyItem(id: 12, moduleId: 4, label: 'Distancia de retiro',  description: 'Penalización de distancia (2da advertencia)',       penaltySeconds: 30),
-
-  // ── Burpees (module_id = 5) ─────────────────────────────
-  PenaltyItem(id: 13, moduleId: 5, label: 'Rep inválida',         description: 'Burpee sin pecho al suelo o salto incompleto',      penaltySeconds: 15),
-  PenaltyItem(id: 14, moduleId: 5, label: 'No llega a la placa',  description: 'El salto no supera la marca de altura',             penaltySeconds: 15),
-  PenaltyItem(id: 15, moduleId: 5, label: 'Dist. penalización',   description: '5m de distancia por 2da advertencia',               penaltySeconds: 30),
-
-  // ── Rowing (module_id = 6) ──────────────────────────────
-  PenaltyItem(id: 16, moduleId: 6, label: 'Stroke incompleto',    description: 'Sin extensión total de piernas en el stroke',       penaltySeconds: 15),
-  PenaltyItem(id: 17, moduleId: 6, label: 'Distancia incompleta', description: 'No completar los metros reglamentarios',            penaltySeconds: 120),
-
-  // ── Farmer Carry (module_id = 7) ────────────────────────
-  PenaltyItem(id: 18, moduleId: 7, label: 'Soltar pesas',         description: 'Dejar caer las pesas al suelo',                    penaltySeconds: 15),
-  PenaltyItem(id: 19, moduleId: 7, label: 'Vuelta faltante',      description: 'No completar una vuelta del recorrido',            penaltySeconds: 180),
-  PenaltyItem(id: 20, moduleId: 7, label: 'Carga incorrecta',     description: 'No cargar ambas pesas durante el recorrido',       penaltySeconds: 30),
-
-  // ── Lunges (module_id = 8) ──────────────────────────────
-  PenaltyItem(id: 21, moduleId: 8, label: 'Rodilla toca suelo',   description: 'La rodilla trasera hace contacto con el piso',     penaltySeconds: 15),
-  PenaltyItem(id: 22, moduleId: 8, label: 'Paso corto',           description: 'Zancada insuficiente (muslo no paralelo al suelo)',  penaltySeconds: 15),
-  PenaltyItem(id: 23, moduleId: 8, label: 'Distancia incompleta', description: 'No completar el recorrido reglamentario',           penaltySeconds: 180),
-
-  // ── Wall Ball (module_id = 9) ───────────────────────────
-  PenaltyItem(id: 24, moduleId: 9, label: 'No llega al objetivo', description: 'La pelota no supera la marca de altura',           penaltySeconds: 15),
-  PenaltyItem(id: 25, moduleId: 9, label: 'Rep inválida',         description: 'Sentadilla sin bajar a 90° o lanzamiento incorrecto', penaltySeconds: 15),
-  PenaltyItem(id: 26, moduleId: 9, label: 'Peso incorrecto',      description: 'Uso de pelota con peso no reglamentario',          penaltySeconds: 120),
-
-  // ── Plate Sit-Up (module_id = 10) ───────────────────────
-  PenaltyItem(id: 27, moduleId: 10, label: 'Rep incompleta',      description: 'No llegar a posición vertical con el plato',       penaltySeconds: 15),
-  PenaltyItem(id: 28, moduleId: 10, label: 'ROM incorrecto',      description: 'Manos no detrás de la cabeza al bajar',            penaltySeconds: 15),
-
-  // ── Kettlebell (module_id = 11) ─────────────────────────
-  PenaltyItem(id: 29, moduleId: 11, label: 'Swing incompleto',    description: 'Kettlebell no llega a nivel de hombros',           penaltySeconds: 15),
-  PenaltyItem(id: 30, moduleId: 11, label: 'Rep inválida',        description: 'Sin extensión completa de cadera en el swing',     penaltySeconds: 15),
-  PenaltyItem(id: 31, moduleId: 11, label: 'Peso incorrecto',     description: 'Uso de peso no reglamentario para la categoría',   penaltySeconds: 120),
+/// Penalizaciones globales — aparecen en TODAS las estaciones
+const List<PenaltyItem> _globalPenalties = [
+  PenaltyItem(
+    id: 2,
+    moduleId: 0,
+    label: 'Actitud antideportiva',
+    description: 'Conducta inapropiada o falta de respeto hacia jueces, competidores u organización',
+    penaltySeconds: 5,
+  ),
+  PenaltyItem(
+    id: 3,
+    moduleId: 0,
+    label: 'Tomar agua',
+    description: 'Hidratarse durante la estación activa fuera de las zonas permitidas',
+    penaltySeconds: 5,
+  ),
+  PenaltyItem(
+    id: 4,
+    moduleId: 0,
+    label: 'Saltarse una estación',
+    description: 'No completar o saltarse una estación del circuito de carrera',
+    penaltySeconds: 180,
+  ),
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Helper: obtener penalizaciones para una estación (específicas + globales)
+// Helper: obtener penalizaciones para una estación
+// Las ERG (Ski Erg y Row Erg) muestran las 4 penalizaciones.
+// El resto de estaciones solo muestra las 3 globales.
 // ─────────────────────────────────────────────────────────────────────────────
 
+bool _isErgStation(String nombre) {
+  final n = nombre.toLowerCase();
+  return n.contains('ski') || n.contains('row') || n.contains('erg');
+}
+
 List<PenaltyItem> getPenaltiesForStation(String tipo, String nombre) {
-  final module = getModuleForStation(tipo, nombre);
-  final moduleId = module?.id ?? 0;
-
-  final specific = allPenaltyTypes.where((p) => p.moduleId == moduleId).toList();
-  final globals   = allPenaltyTypes.where((p) => p.moduleId == 0).toList();
-
-  return [...specific, ...globals];
+  if (_isErgStation(nombre)) {
+    return [_penaltyErg, ..._globalPenalties];
+  }
+  return [..._globalPenalties];
 }
