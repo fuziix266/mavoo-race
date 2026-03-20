@@ -1,0 +1,23 @@
+# Directorios de desarrollo
+.git
+.gitignore
+.metadata
+.vscode
+.dart_tool
+.idea
+.packages
+android
+ios
+linux
+macos
+windows
+test
+build
+
+# Archivos de desarrollo
+*.md
+*.iml
+devtools_options.yaml
+analysis_options.yaml
+.flutter-plugins
+.flutter-plugins-dependencies
