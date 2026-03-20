@@ -5,7 +5,7 @@ import 'database_service.dart';
 
 class ApiService {
   // URL del servidor de producción
-  static const String baseUrl = 'https://mavoo.cl/hyrox/api';
+  static const String baseUrl = 'https://mavoo.fit/hyrox/api';
   // Para pruebas locales en la misma red WiFi, usa la IP del PC:
   // static const String baseUrl = 'http://192.168.x.x/mavoo-laminas/public/hyrox/api';
   static const Duration timeout = Duration(seconds: 15);
