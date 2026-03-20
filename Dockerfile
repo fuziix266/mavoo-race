@@ -1,11 +1,13 @@
 # ── Stage 1: Build Flutter Web ──
-FROM ghcr.io/cirruslabs/flutter:3.32.2 AS build
+FROM ghcr.io/cirruslabs/flutter:stable AS build
+
+ENV FLUTTER_ALLOW_ROOT=true
 
 WORKDIR /app
 
 # Copiar dependencias primero (cache layer)
 COPY pubspec.yaml pubspec.lock ./
-RUN flutter pub get
+RUN flutter pub get --no-example
 
 # Copiar el resto del proyecto
 COPY . .
