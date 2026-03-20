@@ -18,17 +18,18 @@ RUN flutter build web --release --base-href "/race/"
 # ── Stage 2: Serve con Nginx ──
 FROM nginx:alpine
 
-# Copiar el build de Flutter al subdirectorio /race/
-COPY --from=build /app/build/web /usr/share/nginx/html/race
+# Copiar el build de Flutter a la raíz de nginx
+# (Dokploy/Traefik stripea el prefijo /race antes de reenviar al contenedor)
+COPY --from=build /app/build/web /usr/share/nginx/html
 
-# Configuración de nginx para SPA en subdirectorio /race/
+# Configuración de nginx para SPA
 RUN echo 'server { \
     listen 80; \
     server_name _; \
     root /usr/share/nginx/html; \
     index index.html; \
-    location /race/ { \
-        try_files $uri $uri/ /race/index.html; \
+    location / { \
+        try_files $uri $uri/ /index.html; \
     } \
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|wasm)$ { \
         expires 1y; \
