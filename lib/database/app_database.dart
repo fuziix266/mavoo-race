@@ -1,6 +1,7 @@
 // ignore_for_file: type=lint
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:flutter/foundation.dart';
 
 part 'app_database.g.dart';
 
@@ -90,7 +91,21 @@ class AppDatabase extends _$AppDatabase {
       );
 
   static QueryExecutor _openDb() {
-    return driftDatabase(name: 'mallkubox_race');
+    return driftDatabase(
+      name: 'mallkubox_race',
+      web: DriftWebOptions(
+        sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+        driftWorker: Uri.parse('drift_worker.dart.js'),
+        onResult: (result) {
+          if (result.missingFeatures.isNotEmpty) {
+            debugPrint(
+              'drift: using ${result.chosenImplementation} '
+              'missing: ${result.missingFeatures}',
+            );
+          }
+        },
+      ),
+    );
   }
 
   // ── Seed de datos estáticos ───────────────────────────────────────────────
