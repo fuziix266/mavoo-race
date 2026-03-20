@@ -1,12 +1,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Módulos Hyrox — todos los tipos de estación posibles en una carrera Hyrox
-// IDs fijos que coinciden con la tabla hyrox_modules en la BD local
+// Módulos Race — todos los tipos de estación posibles en una carrera
+// IDs fijos que coinciden con la tabla race_modules en la BD local
 // Los datos se usan en la app de forma estática para velocidad instantánea.
 // La BD solo guarda el LOG de lo que ocurre en carrera.
 // ─────────────────────────────────────────────────────────────────────────────
 
-class HyroxModule {
-  const HyroxModule({
+class RaceModule {
+  const RaceModule({
     required this.id,
     required this.key,
     required this.nombre,
@@ -19,36 +19,36 @@ class HyroxModule {
   final String descripcion;
 }
 
-const List<HyroxModule> hyroxModules = [
-  HyroxModule(id: 1,  key: 'run',        nombre: 'Run',              descripcion: 'Tramo de carrera entre estaciones'),
-  HyroxModule(id: 2,  key: 'ski_erg',    nombre: 'SkiErg',           descripcion: 'Máquina de ski ergómetro'),
-  HyroxModule(id: 3,  key: 'sled_push',  nombre: 'Sled Push',        descripcion: 'Empuje de trineo con peso'),
-  HyroxModule(id: 4,  key: 'sled_pull',  nombre: 'Sled Pull',        descripcion: 'Halado de trineo con peso'),
-  HyroxModule(id: 5,  key: 'burpees',    nombre: 'Burpee Broad Jump',descripcion: 'Burpees con salto largo'),
-  HyroxModule(id: 6,  key: 'row_erg',    nombre: 'Rowing',           descripcion: 'Remo en ergómetro'),
-  HyroxModule(id: 7,  key: 'farmer',     nombre: 'Farmer Carry',     descripcion: 'Cargada de pesas con caminata'),
-  HyroxModule(id: 8,  key: 'lunges',     nombre: 'Sandbag Lunges',   descripcion: 'Estocadas con sacos de arena'),
-  HyroxModule(id: 9,  key: 'wall_ball',  nombre: 'Wall Ball Shots',  descripcion: 'Lanzamientos de balón a la pared'),
-  HyroxModule(id: 10, key: 'sit_up',     nombre: 'Plate Sit-Up',     descripcion: 'Abdominales con plato de peso'),
-  HyroxModule(id: 11, key: 'kettlebell', nombre: 'Kettlebell Swing', descripcion: 'Balanceo de kettlebell (American)'),
+const List<RaceModule> raceModules = [
+  RaceModule(id: 1,  key: 'run',        nombre: 'Run',              descripcion: 'Tramo de carrera entre estaciones'),
+  RaceModule(id: 2,  key: 'ski_erg',    nombre: 'SkiErg',           descripcion: 'Máquina de ski ergómetro'),
+  RaceModule(id: 3,  key: 'sled_push',  nombre: 'Sled Push',        descripcion: 'Empuje de trineo con peso'),
+  RaceModule(id: 4,  key: 'sled_pull',  nombre: 'Sled Pull',        descripcion: 'Halado de trineo con peso'),
+  RaceModule(id: 5,  key: 'burpees',    nombre: 'Burpee Broad Jump',descripcion: 'Burpees con salto largo'),
+  RaceModule(id: 6,  key: 'row_erg',    nombre: 'Rowing',           descripcion: 'Remo en ergómetro'),
+  RaceModule(id: 7,  key: 'farmer',     nombre: 'Farmer Carry',     descripcion: 'Cargada de pesas con caminata'),
+  RaceModule(id: 8,  key: 'lunges',     nombre: 'Sandbag Lunges',   descripcion: 'Estocadas con sacos de arena'),
+  RaceModule(id: 9,  key: 'wall_ball',  nombre: 'Wall Ball Shots',  descripcion: 'Lanzamientos de balón a la pared'),
+  RaceModule(id: 10, key: 'sit_up',     nombre: 'Plate Sit-Up',     descripcion: 'Abdominales con plato de peso'),
+  RaceModule(id: 11, key: 'kettlebell', nombre: 'Kettlebell Swing', descripcion: 'Balanceo de kettlebell (American)'),
 ];
 
 // Helper para obtener el módulo desde el tipo y/o nombre de estación
-HyroxModule? getModuleForStation(String tipo, String nombre) {
+RaceModule? getModuleForStation(String tipo, String nombre) {
   final n = nombre.toLowerCase();
   final t = tipo.toLowerCase();
 
-  if (t == 'run') return hyroxModules.firstWhere((m) => m.key == 'run');
-  if (n.contains('ski')) return hyroxModules.firstWhere((m) => m.key == 'ski_erg');
-  if (n.contains('sled') && n.contains('push')) return hyroxModules.firstWhere((m) => m.key == 'sled_push');
-  if (n.contains('sled') && n.contains('pull')) return hyroxModules.firstWhere((m) => m.key == 'sled_pull');
-  if (n.contains('burpee')) return hyroxModules.firstWhere((m) => m.key == 'burpees');
-  if (n.contains('row')) return hyroxModules.firstWhere((m) => m.key == 'row_erg');
-  if (n.contains('farmer') || n.contains('carry')) return hyroxModules.firstWhere((m) => m.key == 'farmer');
-  if (n.contains('lunge')) return hyroxModules.firstWhere((m) => m.key == 'lunges');
-  if (n.contains('wall') || n.contains('ball')) return hyroxModules.firstWhere((m) => m.key == 'wall_ball');
-  if (n.contains('sit') || n.contains('plate')) return hyroxModules.firstWhere((m) => m.key == 'sit_up');
-  if (n.contains('kettlebell') || n.contains('swing')) return hyroxModules.firstWhere((m) => m.key == 'kettlebell');
+  if (t == 'run') return raceModules.firstWhere((m) => m.key == 'run');
+  if (n.contains('ski')) return raceModules.firstWhere((m) => m.key == 'ski_erg');
+  if (n.contains('sled') && n.contains('push')) return raceModules.firstWhere((m) => m.key == 'sled_push');
+  if (n.contains('sled') && n.contains('pull')) return raceModules.firstWhere((m) => m.key == 'sled_pull');
+  if (n.contains('burpee')) return raceModules.firstWhere((m) => m.key == 'burpees');
+  if (n.contains('row')) return raceModules.firstWhere((m) => m.key == 'row_erg');
+  if (n.contains('farmer') || n.contains('carry')) return raceModules.firstWhere((m) => m.key == 'farmer');
+  if (n.contains('lunge')) return raceModules.firstWhere((m) => m.key == 'lunges');
+  if (n.contains('wall') || n.contains('ball')) return raceModules.firstWhere((m) => m.key == 'wall_ball');
+  if (n.contains('sit') || n.contains('plate')) return raceModules.firstWhere((m) => m.key == 'sit_up');
+  if (n.contains('kettlebell') || n.contains('swing')) return raceModules.firstWhere((m) => m.key == 'kettlebell');
   return null;
 }
 
@@ -65,8 +65,8 @@ class PenaltyItem {
     required this.penaltySeconds,
   });
 
-  final int id;           // PK en hyrox_penalty_types
-  final int moduleId;     // FK → HyroxModule.id (0 = global / todos los módulos)
+  final int id;           // PK en race_penalty_types
+  final int moduleId;     // FK → RaceModule.id (0 = global / todos los módulos)
   final String label;
   final String description;
   final int penaltySeconds;
@@ -82,7 +82,7 @@ class PenaltyItem {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Catálogo de penalizaciones — Mallkubox Arica Race 2026
+// Modal de penalizaciones Race— Mallkubox Arica Race 2026
 //
 // Solo en ERG (Ski Erg después de Run 1, Row Erg después de Run 3):
 //   • 5" por penalización en ergs

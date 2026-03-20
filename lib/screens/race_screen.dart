@@ -986,7 +986,7 @@ class _BackButton extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Modal de penalizaciones Hyrox
+// Modal de penalizaciones Race
 // ─────────────────────────────────────────────────────────────────────────────
 
 void _showPenaltyModal(BuildContext context, RaceProvider provider) {

@@ -90,13 +90,16 @@ class RaceProvider with ChangeNotifier {
     _elapsedMs = 0;
     raceState = RaceState.idle;
 
-    // Crear sesión en SQLite
+    // Crear sesión en SQLite/IndexedDB
     _sessionId = await _db.saveSession(
       idEquipo: selectedTeam!.id,
       idHeat: selectedHeat!.id,
       nombreEquipo: selectedTeam!.nombre,
       nombreHeat: selectedHeat!.nombre,
     );
+
+    // Iniciar auto-sync (reintento cada 30s para tiempos pendientes)
+    _api.startAutoSync(intervalSeconds: 30);
     notifyListeners();
   }
 
@@ -267,14 +270,17 @@ class RaceProvider with ChangeNotifier {
     }
     raceState = RaceState.finished;
 
-    // Sync en background
-    _api.syncPending();
+    // Sync forzado y luego detener auto-sync
+    final synced = await _api.syncPending();
+    _api.stopAutoSync();
+    debugPrint('[RaceProvider] Carrera finalizada — $synced tiempos sincronizados');
     notifyListeners();
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    _api.stopAutoSync();
     super.dispose();
   }
 }
