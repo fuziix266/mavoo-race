@@ -39,8 +39,9 @@ class RaceScreen extends StatelessWidget {
     final stationColor = Color(station.color);
 
     // Gradiente: más claro arriba-derecha → color puro → oscuro abajo-izquierda
-    final gradLight = Color.lerp(stationColor, Colors.white, 0.40)!;
-    final gradDark  = Color.lerp(stationColor, Colors.black, 0.30)!;
+    // Contraste aumentado para que sea visible incluso en colores claros (celeste)
+    final gradLight = Color.lerp(stationColor, Colors.white, 0.60)!;
+    final gradDark  = Color.lerp(stationColor, Colors.black, 0.55)!;
 
     return Scaffold(
       body: Container(
@@ -186,7 +187,7 @@ class _StationPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white.withAlpha(30),
         borderRadius: BorderRadius.circular(30),
@@ -195,10 +196,10 @@ class _StationPill extends StatelessWidget {
       child: Text(
         station.nombre.toUpperCase(),
         style: GoogleFonts.rajdhani(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
+          fontSize: 20,
+          fontWeight: FontWeight.w800,
           color: Colors.white,
-          letterSpacing: 2,
+          letterSpacing: 2.5,
         ),
       ),
     );
@@ -816,37 +817,25 @@ class _BackIconButton extends StatelessWidget {
     final isFirstStation = !canGoBack;
     final enabled = !isRunning; // siempre habilitado si no está corriendo
 
-    return SizedBox(
-      width: 44,
-      height: 44,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(22),
-          onTap: enabled
-              ? (isFirstStation ? onExit : onPressed)
-              : null,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: enabled
-                  ? Colors.white.withAlpha(30)
-                  : Colors.transparent,
-              border: Border.all(
-                color: enabled
-                    ? Colors.white.withAlpha(102)
-                    : Colors.white.withAlpha(25),
-                width: 1,
-              ),
-            ),
-            child: Icon(
-              isFirstStation
-                  ? Icons.close_rounded          // X = salir al menú
-                  : Icons.arrow_back_ios_new_rounded, // flecha = volver
-              color: enabled ? Colors.white : Colors.white.withAlpha(60),
-              size: 18,
-            ),
+    return GestureDetector(
+      onTap: enabled ? (isFirstStation ? onExit : onPressed) : null,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: Colors.black.withAlpha(30),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: Colors.white.withAlpha(40),
+            width: 1,
           ),
+        ),
+        child: Icon(
+          isFirstStation
+              ? Icons.close_rounded
+              : Icons.arrow_back_ios_new_rounded,
+          color: enabled ? Colors.white : Colors.white.withAlpha(60),
+          size: 18,
         ),
       ),
     );
