@@ -13,7 +13,7 @@ RUN flutter pub get --no-example
 COPY . .
 
 # Build web release — base-href /race/ para mavoo.fit/race
-RUN flutter build web --release --base-href "/race/"
+RUN flutter build web --release --base-href "/race/" --no-tree-shake-icons
 
 # ── Stage 2: Serve con Nginx ──
 FROM nginx:alpine
