@@ -7,9 +7,9 @@ import 'database_service.dart';
 
 class ApiService {
   // URL del servidor de producción
-  static const String baseUrl = 'https://mavoo.fit/races/api';
+  static const String baseUrl = 'https://mavoo.fit/carreras/api';
   // Para pruebas locales en la misma red WiFi, usa la IP del PC:
-  // static const String baseUrl = 'http://192.168.x.x/mavoo-laminas/public/races/api';
+  // static const String baseUrl = 'http://192.168.x.x/mavoo-laminas/public/carreras/api';
   static const Duration timeout = Duration(seconds: 15);
 
   final DatabaseService _db = DatabaseService();
