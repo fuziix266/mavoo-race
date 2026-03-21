@@ -7,9 +7,9 @@ import 'database_service.dart';
 
 class ApiService {
   // URL del servidor de producción
-  static const String baseUrl = 'https://mavoo.fit/race/api';
+  static const String baseUrl = 'https://mavoo.fit/races/api';
   // Para pruebas locales en la misma red WiFi, usa la IP del PC:
-  // static const String baseUrl = 'http://192.168.x.x/mavoo-laminas/public/race/api';
+  // static const String baseUrl = 'http://192.168.x.x/mavoo-laminas/public/races/api';
   static const Duration timeout = Duration(seconds: 15);
 
   final DatabaseService _db = DatabaseService();
@@ -80,7 +80,9 @@ class ApiService {
         if (attempt < maxRetries) {
           // Backoff exponencial: 1s, 2s, 4s
           final delay = Duration(seconds: 1 << attempt);
-          debugPrint('[ApiService] Reintento ${attempt + 1}/$maxRetries en ${delay.inSeconds}s');
+          debugPrint(
+            '[ApiService] Reintento ${attempt + 1}/$maxRetries en ${delay.inSeconds}s',
+          );
           await Future.delayed(delay);
         }
       }
